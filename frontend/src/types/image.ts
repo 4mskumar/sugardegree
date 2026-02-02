@@ -5,5 +5,6 @@ export interface CakeImage {
     imageUrl: string;
     status: "pending" | "approved" | "rejected";
     createdAt: string;
+    likes: number; // add this
   }
   
