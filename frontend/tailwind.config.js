@@ -9,7 +9,8 @@ export default {
   	extend: {
 		fontFamily: {
 			victory: ["victory", "sans-serif"],
-			inter: ["Inter", 'sans-serif']
+			inter: ["Inter", 'sans-serif'],
+			gasoek: ["Gasoek One", 'sans-serif']
 		  },
   		borderRadius: {
   			lg: 'var(--radius)',

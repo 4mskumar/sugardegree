@@ -14,62 +14,62 @@ import {
   CarouselItem,
 } from "@/components/ui/carousel";
 
-const Skiper54 = () => {
-  const images = [
-    {
-      src: "/images/x.com/13.jpeg",
-      alt: "Illustrations by ©AarzooAly",
-      title: "Block Reader",
-    },
-    {
-      src: "/images/x.com/9.jpeg",
-      alt: "Illustrations by ©AarzooAly",
-      title: "Forest Fungi",
-    },
-    {
-      src: "/images/x.com/20.jpeg",
-      alt: "Illustrations by ©AarzooAly",
-      title: "Golden Dusk",
-    },
-    {
-      src: "/images/x.com/21.jpeg",
-      alt: "Illustrations by ©AarzooAly",
-      title: "Silent Peaks",
-    },
-    {
-      src: "/images/x.com/25.jpeg",
-      alt: "Illustrations by ©AarzooAly",
-      title: "Emerald Woods",
-    },
-    {
-      src: "/images/x.com/32.jpeg",
-      alt: "Illustrations by ©AarzooAly",
-      title: "Falling Mist",
-    },
-    {
-      src: "/images/x.com/19.jpeg",
-      alt: "Illustrations by ©AarzooAly",
-      title: "Midnight Veil",
-    },
-    {
-      src: "/images/x.com/3.jpeg",
-      alt: "Illustrations by ©AarzooAly",
-      title: "Azure Ridge",
-    },
-    {
-      src: "/images/x.com/2.jpeg",
-      alt: "Illustrations by ©AarzooAly",
-      title: "Cloud Summit",
-    },
-  ];
+const Skiper54 = ({images}) => {
+  // const images = [
+  //   {
+  //     src: "/images/x.com/13.jpeg",
+  //     alt: "Illustrations by ©AarzooAly",
+  //     title: "Block Reader",
+  //   },
+  //   {
+  //     src: "/images/x.com/9.jpeg",
+  //     alt: "Illustrations by ©AarzooAly",
+  //     title: "Forest Fungi",
+  //   },
+  //   {
+  //     src: "/images/x.com/20.jpeg",
+  //     alt: "Illustrations by ©AarzooAly",
+  //     title: "Golden Dusk",
+  //   },
+  //   {
+  //     src: "/images/x.com/21.jpeg",
+  //     alt: "Illustrations by ©AarzooAly",
+  //     title: "Silent Peaks",
+  //   },
+  //   {
+  //     src: "/images/x.com/25.jpeg",
+  //     alt: "Illustrations by ©AarzooAly",
+  //     title: "Emerald Woods",
+  //   },
+  //   {
+  //     src: "/images/x.com/32.jpeg",
+  //     alt: "Illustrations by ©AarzooAly",
+  //     title: "Falling Mist",
+  //   },
+  //   {
+  //     src: "/images/x.com/19.jpeg",
+  //     alt: "Illustrations by ©AarzooAly",
+  //     title: "Midnight Veil",
+  //   },
+  //   {
+  //     src: "/images/x.com/3.jpeg",
+  //     alt: "Illustrations by ©AarzooAly",
+  //     title: "Azure Ridge",
+  //   },
+  //   {
+  //     src: "/images/x.com/2.jpeg",
+  //     alt: "Illustrations by ©AarzooAly",
+  //     title: "Cloud Summit",
+  //   },
+  // ];
   return (
-    <div className="flex h-full w-screen items-center justify-center overflow-hidden bg-[#f5f4f3]">
+    <div className="flex h-full w-full items-center justify-center overflow-hidden bg-[#f7f2ea]">
       <Carousel_006
         images={images}
         className=""
         loop={true}
-        showNavigation={true}
-        showPagination={true}
+        showNavigation={false}
+        showPagination={false}
       />
     </div>
   );
