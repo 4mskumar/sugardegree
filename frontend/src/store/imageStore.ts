@@ -9,6 +9,7 @@ interface ImageStore {
   approveImage: (id: string) => Promise<void>;
   page: number;
   loading : boolean;
+  likeImage: (id: string) => void;
 }
 
 export const useImageStore = create<ImageStore>((set, get) => ({
