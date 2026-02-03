@@ -21,6 +21,9 @@ export default function App() {
             </ProtectedRoute>
           }
         />
+
+        {/* MUST BE LAST */}
+        <Route path="*" element={<h1>404 PAGE</h1>} />
       </Routes>
     </BrowserRouter>
   );
