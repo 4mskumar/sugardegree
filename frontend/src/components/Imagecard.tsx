@@ -9,7 +9,7 @@ interface Props {
 }
 
 export default function ImageCard({ image, onClick }: Props) {
-  const { likeImage } = useImageStore();
+
   const [liked, setLiked] = useState(false);
   let tapTimer: any = null;
 
@@ -18,7 +18,7 @@ export default function ImageCard({ image, onClick }: Props) {
       clearTimeout(tapTimer);
       tapTimer = null;
       setLiked(true);
-      likeImage(image._id);
+
     } else {
       tapTimer = setTimeout(() => {
         tapTimer = null;
