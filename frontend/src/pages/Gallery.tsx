@@ -4,7 +4,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Heart, Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import Lenis from "lenis";
+// import Lenis from "lenis";
+import LocomotiveScroll from 'locomotive-scroll';
 
 export default function Gallery() {
   const { images, fetchApproved, loading, nextPage } = useImageStore();
@@ -22,9 +23,16 @@ export default function Gallery() {
   };
   
 
-  const lenis = new Lenis({
-    autoRaf: true,
-  });
+  // const lenis = new Lenis({
+  //   autoRaf: true,
+
+  // });
+
+  useEffect(() => {
+    const locomotiveScroll = new LocomotiveScroll();
+  }, [])
+
+  
 
   useEffect(() => {
     fetchApproved();

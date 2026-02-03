@@ -10,6 +10,7 @@ interface ImageStore {
   page: number;
   loading : boolean;
   likeImage: (id: string) => void;
+  nextPage: () => void;
 }
 
 export const useImageStore = create<ImageStore>((set, get) => ({
