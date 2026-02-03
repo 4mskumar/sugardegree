@@ -10,8 +10,12 @@ export const createImage = async (req: Request, res: Response) => {
       title,
       tags,
       imageUrl,
-      status: "pending"
+      status: "pending",
+      visible: true,
     });
+
+    console.log(image);
+    
 
     res.status(201).json(image);
   } catch (error) {
@@ -19,14 +23,15 @@ export const createImage = async (req: Request, res: Response) => {
   }
 };
 
-// Get images by status
+// Get images by status (admin)
 export const getImages = async (req: Request, res: Response) => {
   try {
     const status = req.query.status as string;
 
-    const images = await Image.find(
-      status ? { status } : {}
-    ).sort({ createdAt: -1 });
+    const filter: any = {};
+    if (status) filter.status = status;
+
+    const images = await Image.find(filter).sort({ createdAt: -1 });
 
     res.json(images);
   } catch (error) {
@@ -34,11 +39,36 @@ export const getImages = async (req: Request, res: Response) => {
   }
 };
 
-// Approve or reject image (admin)
+// Public gallery (only approved & visible)
+export const getPublicImages = async (req: Request, res: Response) => {
+  try {
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 6;
+
+    const images = await Image.find({
+      status: "approved",
+      visible: true,
+    })
+      .sort({ createdAt: -1 })
+      .skip((page - 1) * limit)
+      .limit(limit);
+
+    res.json(images);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch public images" });
+  }
+};
+
+
+// Approve or reject image
 export const updateImageStatus = async (req: Request, res: Response) => {
   try {
     const { status } = req.body;
     const { id } = req.params;
+
+    if (!["approved", "rejected", "pending"].includes(status)) {
+      return res.status(400).json({ message: "Invalid status" });
+    }
 
     const image = await Image.findByIdAndUpdate(
       id,
@@ -52,7 +82,25 @@ export const updateImageStatus = async (req: Request, res: Response) => {
   }
 };
 
-// Delete image (admin)
+// Toggle visibility
+export const updateVisibility = async (req: Request, res: Response) => {
+  try {
+    const { visible } = req.body;
+    const { id } = req.params;
+
+    const image = await Image.findByIdAndUpdate(
+      id,
+      { visible },
+      { new: true }
+    );
+
+    res.json(image);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to update visibility" });
+  }
+};
+
+// Delete image
 export const deleteImage = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;

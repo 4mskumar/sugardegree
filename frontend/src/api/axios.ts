@@ -1,7 +1,8 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: `https://sugardegree-backend.onrender.com/api`,
+  // baseURL: `https://sugardegree-backend.onrender.com/api`,
+  baseURL: `http://localhost:4000/api`,
 });
 
 // Attach token to every request

@@ -2,19 +2,24 @@ import express from "express";
 import {
   createImage,
   getImages,
+  getPublicImages,
   updateImageStatus,
-  deleteImage
+  updateVisibility,
+  deleteImage,
 } from "../controllers/imageController";
-// import { requireAuth } from "../middleware/auth.ts";
 
 export const router = express.Router();
 
 // user upload
 router.post("/", createImage);
 
-// gallery & admin fetch
-router.get("/", getImages);
+// admin fetch by status
+router.get("/", getImages); // ?status=pending|approved|rejected
 
-// admin only
+// public gallery
+router.get("/public", getPublicImages);
+
+// admin actions
 router.patch("/:id", updateImageStatus);
+router.patch("/:id/visibility", updateVisibility);
 router.delete("/:id", deleteImage);

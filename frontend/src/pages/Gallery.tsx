@@ -5,6 +5,8 @@ import { Plus } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import LocomotiveScroll from "locomotive-scroll";
+import { Skiper41 } from "@/components/ui/skiper-ui/skiper41";
+import { Skiper54 } from "@/components/ui/skiper-ui/skiper54";
 
 export default function Gallery() {
   const { images, fetchApproved, loading, nextPage } = useImageStore();
@@ -18,6 +20,11 @@ export default function Gallery() {
   useEffect(() => {
     fetchApproved();
   }, []);
+  const uniqueImages = Array.from(
+    new Map(images.map(i => [i._id, i])).values()
+  );
+
+  
 
   return (
     <div className="min-h-screen bg-[#ff] px-4 py-6 relative flex flex-col">
@@ -27,10 +34,23 @@ export default function Gallery() {
           sugar<span className="text-[#A5CFC8]">degree</span>°
         </h1>
       </div>
+      <div>
+        <div className="flex items-center gap-3 mb-5">
+          <span className="h-[1px] flex-1 bg-gradient-to-r from-[#E8918B]/40 to-transparent" />
+
+          <h2 className="text-sm md:text-base font-semibold uppercase tracking-widest text-zinc-500">
+            Our Picks
+          </h2>
+
+          <span className="h-[1px] flex-1 bg-gradient-to-l from-[#A5CFC8]/40 to-transparent" />
+        </div>
+
+        <Skiper54 />
+      </div>
 
       {/* Bento Grid */}
       <div className="grid grid-cols-2 md:grid-cols-4 auto-rows-[180px] gap-4 flex-1">
-        {images.map((img, i) => (
+        {uniqueImages.map((img, i) => (
           <motion.div
             key={img._id}
             onClick={() => setSelectedImage(img)}
@@ -106,13 +126,12 @@ export default function Gallery() {
       {/* FOOTER */}
       <footer className="mt-16 border-t border-gray-200 pt-8 pb-4 text-sm text-gray-600">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-
           {/* About */}
           <div>
             <h3 className="font-semibold text-gray-800 mb-2">SugarDegree</h3>
             <p className="text-gray-500 text-sm">
-              A community gallery for sharing creative moments and visual stories.
-              Built with love for design & simplicity.
+              A community gallery for sharing creative moments and visual
+              stories. Built with love for design & simplicity.
             </p>
           </div>
 
@@ -121,11 +140,15 @@ export default function Gallery() {
             <h3 className="font-semibold text-gray-800 mb-2">Quick Links</h3>
             <ul className="space-y-1">
               <li className="hover:text-black cursor-pointer">Home</li>
-              <Link to='/upload'>
-              <li className="hover:text-black cursor-pointer">Upload</li>
+              <Link to="/upload">
+                <li className="hover:text-black cursor-pointer">Upload</li>
               </Link>
-              <li className="hover:text-black cursor-pointer">Privacy Policy</li>
-              <li className="hover:text-black cursor-pointer">Terms of Service</li>
+              <li className="hover:text-black cursor-pointer">
+                Privacy Policy
+              </li>
+              <li className="hover:text-black cursor-pointer">
+                Terms of Service
+              </li>
             </ul>
           </div>
 

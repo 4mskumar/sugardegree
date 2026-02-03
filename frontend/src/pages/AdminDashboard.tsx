@@ -1,139 +1,143 @@
 import { useEffect, useState } from "react";
-import { api } from "../api/axios";
+import { useImageStore } from "../store/imageStore";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { motion } from "framer-motion";
 
-interface CakeImage {
-  _id: string;
-  title: string;
-  imageUrl: string;
-  status: string;
-}
+type ActionType = "approve" | "reject" | "delete";
 
-const AdminDashboard = () => {
-  const [images, setImages] = useState<CakeImage[]>([]);
+export default function AdminDashboard() {
+  const {
+    images,
+    fetchImages,
+    updateStatus,
+    toggleVisibility,
+    deleteImage,
+    loading,
+  } = useImageStore();
+
+  const [tab, setTab] = useState<"pending" | "approved" | "rejected">("pending");
+  const [confirm, setConfirm] = useState<{ id: string; action: ActionType } | null>(null);
   const [selected, setSelected] = useState<string[]>([]);
-  const [loading, setLoading] = useState(false);
-
-  const fetchPending = async () => {
-    const res = await api.get("/images?status=pending");
-    setImages(res.data);
-  };
-
-  const toggleSelect = (id: string) => {
-    if (selected.includes(id)) {
-      setSelected(selected.filter((i) => i !== id));
-    } else {
-      setSelected([...selected, id]);
-    }
-  };
-
-  const bulkUpdate = async (status: "approved" | "rejected") => {
-    if (selected.length === 0) return;
-    try {
-      setLoading(true);
-      await Promise.all(
-        selected.map((id) =>
-          api.patch(`/images/${id}`, { status })
-        )
-      );
-      setImages(images.filter((img) => !selected.includes(img._id)));
-      setSelected([]);
-    } catch (err) {
-      console.error(err);
-      alert("Bulk action failed");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleLogout = () => {
-    localStorage.clear();
-    window.location.reload();
-  };
 
   useEffect(() => {
-    fetchPending();
-  }, []);
+    fetchImages(tab);
+    setSelected([]);
+  }, [tab]);
+
+  const toggleSelect = (id: string) => {
+    setSelected((prev) =>
+      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
+    );
+  };
+
+  const handleBulk = (action: "approved" | "rejected") => {
+    selected.forEach((id) => updateStatus(id, action));
+    setSelected([]);
+  };
 
   return (
     <div className="min-h-screen bg-slate-50 p-6">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Pending Cake Images</h1>
-        <Button onClick={handleLogout} variant={"destructive"} className="bg-red-500">
-          Logout
-        </Button>
+      <h1 className="text-2xl font-bold mb-6">Admin Dashboard</h1>
+
+      {/* Tabs */}
+      <div className="flex gap-3 mb-4">
+        {["pending", "approved", "rejected"].map((t) => (
+          <Button
+            key={t}
+            variant={tab === t ? "default" : "outline"}
+            onClick={() => setTab(t as any)}
+          >
+            {t.toUpperCase()}
+          </Button>
+        ))}
       </div>
 
-      {images.length > 0 && (
-        <div className="flex gap-2 mb-4">
+      {/* Bulk Actions */}
+      {selected.length > 0 && tab === "pending" && (
+        <div className="flex gap-3 mb-4">
           <Button
-            onClick={() => bulkUpdate("approved")}
-            disabled={selected.length === 0 || loading}
+            className="bg-green-500 text-white"
+            onClick={() => handleBulk("approved")}
           >
-            Bulk Approve
+            Bulk Approve ({selected.length})
           </Button>
+
           <Button
-            onClick={() => bulkUpdate("rejected")}
-            disabled={selected.length === 0 || loading}
-            variant="destructive"
-            className="bg-red-500"
+            className="bg-pink-500 text-white"
+            onClick={() => handleBulk("rejected")}
           >
-            Bulk Reject
+            Bulk Reject ({selected.length})
           </Button>
-          <span className="ml-auto text-sm text-gray-500">
-            Selected {selected.length} / {images.length}
-          </span>
         </div>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {/* Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {images.map((img) => (
-          <motion.div
-            key={img._id}
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="relative"
-          >
-            <Card className="overflow-hidden shadow-lg rounded-2xl">
-              <img
-                src={img.imageUrl}
-                alt={img.title}
-                className="w-full h-48 object-cover"
+          <motion.div key={img._id} initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+            <Card className="overflow-hidden rounded-xl shadow relative">
+
+              {/* Checkbox */}
+              <input
+                type="checkbox"
+                checked={selected.includes(img._id)}
+                onChange={() => toggleSelect(img._id)}
+                className="absolute top-3 right-3 w-4 h-4 accent-black"
               />
-              <CardContent className="flex flex-col gap-2">
-                <div className="flex justify-between items-center">
-                  <CardTitle className="text-lg">{img.title}</CardTitle>
-                  <input
-                    type="checkbox"
-                    checked={selected.includes(img._id)}
-                    onChange={() => toggleSelect(img._id)}
-                    className="w-4 h-4 accent-blue-500"
-                  />
-                </div>
-                <div className="flex gap-2 mt-2">
+
+              <img src={img.imageUrl} className="h-48 w-full object-cover" />
+
+              <CardContent className="p-4 space-y-2">
+                <h2 className="font-semibold">{img.title}</h2>
+                <p className="text-sm text-gray-500">Status: {img.status}</p>
+
+                <div className="flex gap-2 flex-wrap">
+                  {tab === "pending" && (
+                    <>
+                      <Button
+                        size="sm"
+                        className="bg-green-400 text-black font-semibold"
+                        onClick={() => setConfirm({ id: img._id, action: "approve" })}
+                      >
+                        Approve
+                      </Button>
+
+                      <Button
+                        size="sm"
+                        className="bg-pink-500 text-white font-semibold"
+                        onClick={() => setConfirm({ id: img._id, action: "reject" })}
+                      >
+                        Reject
+                      </Button>
+                    </>
+                  )}
+
+                  {tab !== "pending" && (
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => toggleVisibility(img._id, !img.visible)}
+                    >
+                      {img.visible ? "Hide" : "Show"}
+                    </Button>
+                  )}
+
                   <Button
-                    onClick={() =>
-                      api.patch(`/images/${img._id}`, { status: "approved" }).then(() =>
-                        setImages(images.filter((i) => i._id !== img._id))
-                      )
-                    }
                     size="sm"
+                    className="bg-red-500 text-white"
+                    onClick={() => setConfirm({ id: img._id, action: "delete" })}
                   >
-                    Approve
-                  </Button>
-                  <Button
-                    onClick={() =>
-                      api.patch(`/images/${img._id}`, { status: "rejected" }).then(() =>
-                        setImages(images.filter((i) => i._id !== img._id))
-                      )
-                    }
-                    size="sm"
-                    variant="destructive"
-                    className="bg-red-500"
-                  >
-                    Reject
+                    Delete
                   </Button>
                 </div>
               </CardContent>
@@ -142,11 +146,48 @@ const AdminDashboard = () => {
         ))}
       </div>
 
-      {images.length === 0 && (
-        <p className="text-center text-gray-500 mt-12">No pending images</p>
+      {images.length === 0 && !loading && (
+        <p className="text-center mt-12 text-gray-500">No images found</p>
       )}
+
+      {/* Alert Dialog */}
+      <AlertDialog open={!!confirm} onOpenChange={() => setConfirm(null)}>
+        <AlertDialogContent className="bg-white text-black border shadow-xl rounded-lg">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-lg font-bold">
+              Confirm Action
+            </AlertDialogTitle>
+          </AlertDialogHeader>
+
+          <p className="text-gray-600">
+            Are you sure you want to {confirm?.action} this image?
+          </p>
+
+          <AlertDialogFooter>
+            <AlertDialogCancel className="border">Cancel</AlertDialogCancel>
+
+            <AlertDialogAction
+              className="bg-red-500 text-white hover:bg-red-600"
+              onClick={() => {
+                if (!confirm) return;
+
+                if (confirm.action === "approve")
+                  updateStatus(confirm.id, "approved");
+
+                if (confirm.action === "reject")
+                  updateStatus(confirm.id, "rejected");
+
+                if (confirm.action === "delete")
+                  deleteImage(confirm.id);
+
+                setConfirm(null);
+              }}
+            >
+              Confirm
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
-};
-
-export default AdminDashboard;
+}

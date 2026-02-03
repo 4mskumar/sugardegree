@@ -8,7 +8,8 @@ export interface IImage extends Document {
     imageUrl : string;
     createdAt: Date;
     tags: string[],
-    likes: number
+    likes: number;
+    visible: Boolean
 }
 
 const imageSchema: Schema = new Schema<IImage>({
@@ -37,7 +38,11 @@ const imageSchema: Schema = new Schema<IImage>({
     likes : {
         type : Number,
         default : 0
-    }
+    },
+    visible: {
+        type: Boolean,
+        default: true,
+      },
 })
 
-export const Image = mongoose.model<IImage>('image', imageSchema)
+export const Image = mongoose.model<IImage>('Image', imageSchema)
