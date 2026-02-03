@@ -1,38 +1,26 @@
 import { useEffect, useState } from "react";
 import { useImageStore } from "../store/imageStore";
 import { motion, AnimatePresence } from "framer-motion";
-import { Heart, Plus } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Plus } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import LocomotiveScroll from 'locomotive-scroll';
+import LocomotiveScroll from "locomotive-scroll";
 
 export default function Gallery() {
   const { images, fetchApproved, loading, nextPage } = useImageStore();
   const [selectedImage, setSelectedImage] = useState<any>(null);
   const navigate = useNavigate();
 
-  const getRandomSpan = () => {
-    const layouts = [
-      "col-span-1 row-span-1",
-      "col-span-2 row-span-1",
-      "col-span-1 row-span-2",
-      "col-span-2 row-span-2",
-    ];
-    return layouts[Math.floor(Math.random() * layouts.length)];
-  };
-
   useEffect(() => {
     const locomotiveScroll = new LocomotiveScroll();
-  }, [])
-
-  
+  }, []);
 
   useEffect(() => {
     fetchApproved();
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#ff] px-4 py-6 relative">
+    <div className="min-h-screen bg-[#ff] px-4 py-6 relative flex flex-col">
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-semibold tracking-tight text-[#E8918B]">
@@ -41,7 +29,7 @@ export default function Gallery() {
       </div>
 
       {/* Bento Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-4 auto-rows-[180px] gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 auto-rows-[180px] gap-4 flex-1">
         {images.map((img, i) => (
           <motion.div
             key={img._id}
@@ -57,11 +45,7 @@ export default function Gallery() {
               src={img.imageUrl}
               className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
             />
-
-            {/* Overlay */}
             <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition" />
-
-            
           </motion.div>
         ))}
 
@@ -118,6 +102,54 @@ export default function Gallery() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* FOOTER */}
+      <footer className="mt-16 border-t border-gray-200 pt-8 pb-4 text-sm text-gray-600">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+          {/* About */}
+          <div>
+            <h3 className="font-semibold text-gray-800 mb-2">SugarDegree</h3>
+            <p className="text-gray-500 text-sm">
+              A community gallery for sharing creative moments and visual stories.
+              Built with love for design & simplicity.
+            </p>
+          </div>
+
+          {/* Links */}
+          <div>
+            <h3 className="font-semibold text-gray-800 mb-2">Quick Links</h3>
+            <ul className="space-y-1">
+              <li className="hover:text-black cursor-pointer">Home</li>
+              <Link to='/upload'>
+              <li className="hover:text-black cursor-pointer">Upload</li>
+              </Link>
+              <li className="hover:text-black cursor-pointer">Privacy Policy</li>
+              <li className="hover:text-black cursor-pointer">Terms of Service</li>
+            </ul>
+          </div>
+
+          {/* Contact */}
+          <div>
+            <h3 className="font-semibold text-gray-800 mb-2">Contact</h3>
+            <p>Email: support@sugardegree.com</p>
+            <p>Instagram: @sugardegree.in</p>
+          </div>
+        </div>
+
+        {/* Bottom bar */}
+        <div className="mt-6 flex flex-col md:flex-row justify-between items-center text-xs text-gray-400">
+          <p>© {new Date().getFullYear()} SugarDegree. All rights reserved.</p>
+
+          {/* Hidden admin link */}
+          <button
+            onClick={() => navigate("/admin/login")}
+            className="mt-2 md:mt-0 text-gray-400 hover:text-black transition"
+          >
+            Are you an admin?
+          </button>
+        </div>
+      </footer>
     </div>
   );
 }
