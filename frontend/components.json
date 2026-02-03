@@ -6,7 +6,7 @@
   "tailwind": {
     "config": "tailwind.config.js",
     "css": "src/index.css",
-    "baseColor": "gray",
+    "baseColor": "neutral",
     "cssVariables": true,
     "prefix": ""
   },
@@ -19,9 +19,5 @@
     "lib": "@/lib",
     "hooks": "@/hooks"
   },
-  "registries": {
-    "@react-bits": "https://reactbits.dev/r/{name}.json",
-    "@magicui": "https://magicui.design/r/{name}",
-    "@skiper-ui": "https://skiper-ui.com/registry/{name}.json"
-  }
+  "registries": {}
 }
