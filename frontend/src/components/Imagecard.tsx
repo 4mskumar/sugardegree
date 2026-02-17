@@ -17,6 +17,7 @@ export default function ImageCard({ image, onClick }: Props) {
       clearTimeout(tapTimer);
       tapTimer = null;
       setLiked(true);
+      likeImage(image._id);
     } else {
       tapTimer = setTimeout(() => {
         tapTimer = null;
